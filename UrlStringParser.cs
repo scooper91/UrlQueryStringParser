@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace QueryStringParser
 {
@@ -8,7 +9,12 @@ namespace QueryStringParser
 		{
 			var urlDictionary = new Dictionary<string, string>();
 
-			if (url == string.Empty || url.Contains("?"))
+			if (url.StartsWith("?"))
+			{
+				url = url.Substring(1, (url.Length - 1));
+			}
+
+			if (url == string.Empty)
 			{
 				return urlDictionary;
 			}
