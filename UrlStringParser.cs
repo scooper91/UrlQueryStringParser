@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace QueryStringParser
 {
@@ -8,6 +7,7 @@ namespace QueryStringParser
 		public IDictionary<string,string> ParsedQueryString(string url)
 		{
 			var urlDictionary = new Dictionary<string, string>();
+			var keyUrl = "";
 
 			if (url.StartsWith("?"))
 			{
@@ -18,8 +18,20 @@ namespace QueryStringParser
 			{
 				return urlDictionary;
 			}
-			
-			urlDictionary.Add(url, null);
+
+			if (url.Contains("="))
+			{
+				var equalsPos = url.IndexOf('=');
+				var fieldUrl = url.Remove(equalsPos);
+				keyUrl = url.Substring(equalsPos + 1);
+				urlDictionary.Add(fieldUrl, keyUrl);
+			}
+
+			if (keyUrl == string.Empty)
+			{
+				urlDictionary.Add(url, null);
+			}
+
 			return urlDictionary;
 		}
 	}

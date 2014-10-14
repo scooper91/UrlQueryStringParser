@@ -42,12 +42,12 @@ namespace QueryStringParser
 			Assert.That(urlInput.ContainsValue(null));
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void Should_add_value_if_value_entered()
 		{
 			var parser = new UrlStringParser();
 			var urlInput = (Dictionary<string, string>)parser.ParsedQueryString("test=hello");
-			
+
 			Assert.That(urlInput.ContainsKey("test"));
 			Assert.That(urlInput.ContainsValue("hello"));
 			Assert.That(urlInput.Count, Is.EqualTo(1));
