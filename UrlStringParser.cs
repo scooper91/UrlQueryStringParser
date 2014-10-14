@@ -27,9 +27,9 @@ namespace QueryStringParser
 
 				if (singleQueryString.Contains("="))
 				{
-					var equalsPos = url.IndexOf('=');
-					var fieldUrl = url.Remove(equalsPos);
-					keyUrl = url.Substring(equalsPos + 1);
+					var equalsPos = singleQueryString.IndexOf('=');
+					var fieldUrl = singleQueryString.Remove(equalsPos);
+					keyUrl = singleQueryString.Substring(equalsPos + 1);
 					urlDictionary.Add(fieldUrl, keyUrl);
 				}
 

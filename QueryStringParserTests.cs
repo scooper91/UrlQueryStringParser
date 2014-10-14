@@ -61,5 +61,14 @@ namespace QueryStringParser
 
 			Assert.That(urlInput.Count, Is.EqualTo(2));
 		}
+
+		[Test]
+		public void Should_add_multiple_values()
+		{
+			var parser = new UrlStringParser();
+			var urlInput = (Dictionary<string, string>) parser.ParsedQueryString("test=hello&name=sophie");
+
+			Assert.That(urlInput.Count, Is.EqualTo(2));
+		}
 	}
 }
