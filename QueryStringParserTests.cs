@@ -5,27 +5,31 @@ namespace QueryStringParser
 {
 	public class QueryStringParserTests
 	{
+		private UrlStringParser _parser;
+
+		[SetUp]
+		public void Setup()
+		{
+			_parser = new UrlStringParser();
+		}
+
 		[Test]
 		public void Should_return_empty_list_when_empty_string_passed_in()
 		{
-			var parser = new UrlStringParser();
-			
-			Assert.That(parser.ParsedQueryString("").Count, Is.EqualTo(0));
+			Assert.That(_parser.ParsedQueryString("").Count, Is.EqualTo(0));
 		}
 
 		[Test]
 		public void Should_return_empty_list_when_only_question_mark_entered()
 		{
-			var parser = new UrlStringParser();
-			
-			Assert.That(parser.ParsedQueryString("?").Count, Is.EqualTo(0));
+			Assert.That(_parser.ParsedQueryString("?").Count, Is.EqualTo(0));
 		}
 
 		[Test]
 		public void Should_return_key_value_if_key_entered()
 		{
-			var parser = new UrlStringParser();
-			var urlInput = (Dictionary<string, string>)parser.ParsedQueryString("test");
+			var urlInput = (Dictionary<string, string>)_parser.ParsedQueryString("test");
+
 			Assert.That(urlInput.ContainsKey("test"));
 			Assert.That(urlInput.ContainsValue(null));
 			Assert.That(urlInput.Count, Is.EqualTo(1));
@@ -34,41 +38,25 @@ namespace QueryStringParser
 		[Test]
 		public void Should_ignore_leading_question_mark_when_present()
 		{
-			var parser = new UrlStringParser();
-			var urlInput = (Dictionary<string, string>) parser.ParsedQueryString("?test");
+			var urlInput = (Dictionary<string, string>)_parser.ParsedQueryString("?test");
 
 			Assert.That(urlInput.Count, Is.EqualTo(1));
 			Assert.That(urlInput.ContainsKey("test"));
 			Assert.That(urlInput.ContainsValue(null));
 		}
 
-		[Test]
-		public void Should_add_value_if_value_entered()
+		[TestCase("test=hello", 1, "test", "hello")]
+		[TestCase("test=hello&name=sophie", 2, "name", "hello")]
+		[TestCase("test=hello&name=sophie&age=22", 3, "age", "22")]
+		[TestCase("test&hello", 2, "test", null)]
+		public void Should_add_query_strings_to_dictionary(
+			string queryString, int expectedCount, string expectedKey, string expectedValue)
 		{
-			var parser = new UrlStringParser();
-			var urlInput = (Dictionary<string, string>)parser.ParsedQueryString("test=hello");
+			var urlInput = (Dictionary<string, string>) _parser.ParsedQueryString(queryString);
 
-			Assert.That(urlInput.ContainsKey("test"));
-			Assert.That(urlInput.ContainsValue("hello"));
-			Assert.That(urlInput.Count, Is.EqualTo(1));
-		}
-
-		[Test]
-		public void Should_add_multiple_fields()
-		{
-			var parser = new UrlStringParser();
-			var urlInput = (Dictionary<string, string>) parser.ParsedQueryString("test&hello");
-
-			Assert.That(urlInput.Count, Is.EqualTo(2));
-		}
-
-		[Test]
-		public void Should_add_multiple_values()
-		{
-			var parser = new UrlStringParser();
-			var urlInput = (Dictionary<string, string>) parser.ParsedQueryString("test=hello&name=sophie");
-
-			Assert.That(urlInput.Count, Is.EqualTo(2));
+			Assert.That(urlInput.Count, Is.EqualTo(expectedCount));
+			Assert.That(urlInput.ContainsKey(expectedKey));
+			Assert.That(urlInput.ContainsValue(expectedValue));
 		}
 	}
 }

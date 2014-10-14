@@ -15,22 +15,19 @@ namespace QueryStringParser
 			{
 				var singleQueryString = multipleQueryString;
 
-				if (multipleQueryString.StartsWith("?"))
+				if (HasLeadingQuestionMark(multipleQueryString))
 				{
 					singleQueryString = singleQueryString.Substring(1, (multipleQueryString.Length - 1));
 				}
 
-				if (singleQueryString == string.Empty)
+				if (QueryStringIsEmpty(singleQueryString))
 				{
 					return urlDictionary;
 				}
 
 				if (singleQueryString.Contains("="))
 				{
-					var equalsPos = singleQueryString.IndexOf('=');
-					var fieldUrl = singleQueryString.Remove(equalsPos);
-					keyUrl = singleQueryString.Substring(equalsPos + 1);
-					urlDictionary.Add(fieldUrl, keyUrl);
+					keyUrl = AddFieldAndValueToDictionary(singleQueryString, keyUrl, urlDictionary);
 				}
 
 				if (keyUrl == string.Empty)
@@ -39,6 +36,26 @@ namespace QueryStringParser
 				}
 			}
 			return urlDictionary;
+		}
+
+		private static string AddFieldAndValueToDictionary(
+			string singleQueryString, string keyUrl, Dictionary<string, string> urlDictionary)
+		{
+			var equalsPos = singleQueryString.IndexOf('=');
+			var fieldUrl = singleQueryString.Remove(equalsPos);
+			keyUrl = singleQueryString.Substring(equalsPos + 1);
+			urlDictionary.Add(fieldUrl, keyUrl);
+			return keyUrl;
+		}
+
+		private static bool QueryStringIsEmpty(string singleQueryString)
+		{
+			return singleQueryString == string.Empty;
+		}
+
+		private static bool HasLeadingQuestionMark(string multipleQueryString)
+		{
+			return multipleQueryString.StartsWith("?");
 		}
 	}
 }
