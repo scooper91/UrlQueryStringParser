@@ -9,29 +9,35 @@ namespace QueryStringParser
 			var urlDictionary = new Dictionary<string, string>();
 			var keyUrl = "";
 
-			if (url.StartsWith("?"))
-			{
-				url = url.Substring(1, (url.Length - 1));
-			}
+			var multipleQueryStrings = url.Split('&');
 
-			if (url == string.Empty)
+			foreach (var multipleQueryString in multipleQueryStrings)
 			{
-				return urlDictionary;
-			}
+				var singleQueryString = multipleQueryString;
 
-			if (url.Contains("="))
-			{
-				var equalsPos = url.IndexOf('=');
-				var fieldUrl = url.Remove(equalsPos);
-				keyUrl = url.Substring(equalsPos + 1);
-				urlDictionary.Add(fieldUrl, keyUrl);
-			}
+				if (multipleQueryString.StartsWith("?"))
+				{
+					singleQueryString = singleQueryString.Substring(1, (multipleQueryString.Length - 1));
+				}
 
-			if (keyUrl == string.Empty)
-			{
-				urlDictionary.Add(url, null);
-			}
+				if (singleQueryString == string.Empty)
+				{
+					return urlDictionary;
+				}
 
+				if (singleQueryString.Contains("="))
+				{
+					var equalsPos = url.IndexOf('=');
+					var fieldUrl = url.Remove(equalsPos);
+					keyUrl = url.Substring(equalsPos + 1);
+					urlDictionary.Add(fieldUrl, keyUrl);
+				}
+
+				if (keyUrl == string.Empty)
+				{
+					urlDictionary.Add(singleQueryString, null);
+				}
+			}
 			return urlDictionary;
 		}
 	}
