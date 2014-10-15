@@ -49,6 +49,7 @@ namespace QueryStringParser
 		[TestCase("test=hello&name=sophie", 2, "name", "hello")]
 		[TestCase("test=hello&name=sophie&age=22", 3, "age", "22")]
 		[TestCase("test&hello", 2, "test", null)]
+		[TestCase("a=b&c=d&e&f=g", 4, "f", "d")]
 		public void Should_add_query_strings_to_dictionary(
 			string queryString, int expectedCount, string expectedKey, string expectedValue)
 		{

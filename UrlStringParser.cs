@@ -7,18 +7,18 @@ namespace QueryStringParser
 		public IDictionary<string,string> ParsedQueryString(string url)
 		{
 			var urlDictionary = new Dictionary<string, string>();
-			var keyUrl = "";
+
+			if (HasLeadingQuestionMark(url))
+			{
+				url = url.Substring(1, (url.Length - 1));
+			}
 
 			var multipleQueryStrings = url.Split('&');
 
 			foreach (var multipleQueryString in multipleQueryStrings)
 			{
+				var valueUrl = "";
 				var singleQueryString = multipleQueryString;
-
-				if (HasLeadingQuestionMark(multipleQueryString))
-				{
-					singleQueryString = singleQueryString.Substring(1, (multipleQueryString.Length - 1));
-				}
 
 				if (QueryStringIsEmpty(singleQueryString))
 				{
@@ -27,10 +27,10 @@ namespace QueryStringParser
 
 				if (singleQueryString.Contains("="))
 				{
-					keyUrl = AddFieldAndValueToDictionary(singleQueryString, keyUrl, urlDictionary);
+					valueUrl = AddFieldAndValueToDictionary(singleQueryString, valueUrl, urlDictionary);
 				}
 
-				if (keyUrl == string.Empty)
+				if (valueUrl == string.Empty)
 				{
 					urlDictionary.Add(singleQueryString, null);
 				}
@@ -53,9 +53,9 @@ namespace QueryStringParser
 			return singleQueryString == string.Empty;
 		}
 
-		private static bool HasLeadingQuestionMark(string multipleQueryString)
+		private static bool HasLeadingQuestionMark(string url)
 		{
-			return multipleQueryString.StartsWith("?");
+			return url.StartsWith("?");
 		}
 	}
 }
