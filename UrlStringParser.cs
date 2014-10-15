@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace QueryStringParser
 {
@@ -20,7 +21,7 @@ namespace QueryStringParser
 				var valueUrl = "";
 				var singleQueryString = multipleQueryString;
 
-				if (QueryStringIsEmpty(singleQueryString))
+				if (IsEmpty(singleQueryString))
 				{
 					return urlDictionary;
 				}
@@ -39,16 +40,17 @@ namespace QueryStringParser
 		}
 
 		private static string AddFieldAndValueToDictionary(
-			string singleQueryString, string keyUrl, Dictionary<string, string> urlDictionary)
+			string singleQueryString, string valueUrl, Dictionary<string, string> urlDictionary)
 		{
+			if (valueUrl == null) throw new ArgumentNullException("valueUrl");
 			var equalsPos = singleQueryString.IndexOf('=');
 			var fieldUrl = singleQueryString.Remove(equalsPos);
-			keyUrl = singleQueryString.Substring(equalsPos + 1);
-			urlDictionary.Add(fieldUrl, keyUrl);
-			return keyUrl;
+			valueUrl = singleQueryString.Substring(equalsPos + 1);
+			urlDictionary.Add(fieldUrl, valueUrl);
+			return valueUrl;
 		}
 
-		private static bool QueryStringIsEmpty(string singleQueryString)
+		private static bool IsEmpty(string singleQueryString)
 		{
 			return singleQueryString == string.Empty;
 		}

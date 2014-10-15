@@ -26,7 +26,7 @@ namespace QueryStringParser
 		}
 
 		[Test]
-		public void Should_return_key_value_if_key_entered()
+		public void Should_return_key_value_if_only_key_entered()
 		{
 			var urlInput = (Dictionary<string, string>)_parser.ParsedQueryString("test");
 
