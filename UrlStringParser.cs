@@ -7,47 +7,40 @@ namespace QueryStringParser
 	{
 		public IDictionary<string,string> ParsedQueryString(string url)
 		{
-			var urlDictionary = new Dictionary<string, string>();
-
 			if (HasLeadingQuestionMark(url))
 			{
-				url = url.Substring(1, (url.Length - 1));
+				url = url.Substring(1);
 			}
 
 			if (url == string.Empty)
 			{
-				return urlDictionary;
+				return new Dictionary<string, string>();
 			}
 
-			var multipleQueryStrings = url.Split('&');
+			var fieldValuePairs = url.Split('&');
+			var urlDictionary = new Dictionary<string, string>();
 
-			foreach (var multipleQueryString in multipleQueryStrings)
+			foreach (var fieldValuePair in fieldValuePairs)
 			{
-				var valueUrl = "";
-				var singleQueryString = multipleQueryString;
-
-				if (singleQueryString.Contains("="))
+				if (fieldValuePair.Contains("="))
 				{
-					valueUrl = AddFieldAndValueToDictionary(singleQueryString, valueUrl, urlDictionary);
+					AddFieldAndValueToDictionary(fieldValuePair, urlDictionary);
 				}
-
-				if (valueUrl == string.Empty)
+				else
 				{
-					urlDictionary.Add(singleQueryString, null);
+					urlDictionary.Add(fieldValuePair, null);
 				}
 			}
 			return urlDictionary;
 		}
 
-		private static string AddFieldAndValueToDictionary(
-			string singleQueryString, string valueUrl, Dictionary<string, string> urlDictionary)
+		private static void AddFieldAndValueToDictionary(
+			string singleQueryString, Dictionary<string, string> urlDictionary)
 		{
-			if (valueUrl == null) throw new ArgumentNullException("valueUrl");
 			var equalsPos = singleQueryString.IndexOf('=');
 			var fieldUrl = singleQueryString.Remove(equalsPos);
-			valueUrl = singleQueryString.Substring(equalsPos + 1);
+			var valueUrl = singleQueryString.Substring(equalsPos + 1);
 			urlDictionary.Add(fieldUrl, valueUrl);
-			return valueUrl;
 		}
 
 		private static bool HasLeadingQuestionMark(string url)
