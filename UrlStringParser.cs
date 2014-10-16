@@ -14,17 +14,17 @@ namespace QueryStringParser
 				url = url.Substring(1, (url.Length - 1));
 			}
 
+			if (url == string.Empty)
+			{
+				return urlDictionary;
+			}
+
 			var multipleQueryStrings = url.Split('&');
 
 			foreach (var multipleQueryString in multipleQueryStrings)
 			{
 				var valueUrl = "";
 				var singleQueryString = multipleQueryString;
-
-				if (IsEmpty(singleQueryString))
-				{
-					return urlDictionary;
-				}
 
 				if (singleQueryString.Contains("="))
 				{
@@ -48,11 +48,6 @@ namespace QueryStringParser
 			valueUrl = singleQueryString.Substring(equalsPos + 1);
 			urlDictionary.Add(fieldUrl, valueUrl);
 			return valueUrl;
-		}
-
-		private static bool IsEmpty(string singleQueryString)
-		{
-			return singleQueryString == string.Empty;
 		}
 
 		private static bool HasLeadingQuestionMark(string url)
