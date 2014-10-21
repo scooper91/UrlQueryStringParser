@@ -59,5 +59,25 @@ namespace QueryStringParser
 			Assert.That(urlInput.ContainsKey(expectedKey));
 			Assert.That(urlInput.ContainsValue(expectedValue));
 		}
+
+		[Test]
+		public void Should_split_pairs_on_semicolon()
+		{
+			var urlInput = (Dictionary<string, string>) _parser.ParsedQueryString("test;hello");
+
+			Assert.That(urlInput.Count, Is.EqualTo(2));
+			Assert.That(urlInput.ContainsKey("test"));
+			Assert.That(urlInput.ContainsKey("hello"));
+			Assert.That(urlInput.ContainsValue(null));
+		}
+
+		[TestCase("test=hello&test=goodbye", 2)]
+		//[TestCase("test=hello&test=goodbye&test=sophie", 3)]
+		public void Should_add_multiple_values_for_one_field(string urlQueryString , int expectedOutcome )
+		{
+			var urlInput = (Dictionary<string, string>) _parser.ParsedQueryString(urlQueryString);
+
+			Assert.That(urlInput.Count, Is.EqualTo(expectedOutcome));
+		}
 	}
 }

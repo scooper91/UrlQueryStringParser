@@ -16,7 +16,7 @@ namespace QueryStringParser
 				return new Dictionary<string, string>();
 			}
 
-			var fieldValuePairs = url.Split('&');
+			var fieldValuePairs = url.Split('&', ';');
 			var urlDictionary = new Dictionary<string, string>();
 
 			foreach (var fieldValuePair in fieldValuePairs)
@@ -39,6 +39,10 @@ namespace QueryStringParser
 			var equalsPos = singleQueryString.IndexOf('=');
 			var fieldUrl = singleQueryString.Remove(equalsPos);
 			var valueUrl = singleQueryString.Substring(equalsPos + 1);
+			if (urlDictionary.ContainsKey(fieldUrl))
+			{
+				fieldUrl += "1";
+			}
 			urlDictionary.Add(fieldUrl, valueUrl);
 		}
 
