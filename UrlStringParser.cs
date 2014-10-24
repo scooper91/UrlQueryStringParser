@@ -4,7 +4,9 @@ namespace QueryStringParser
 {
 	public class UrlStringParser
 	{
-		public IDictionary<string,string> ParsedQueryString(string url)
+		//var valueList = new List<string>();
+
+		public IDictionary<string,List<string>> ParsedQueryString(string url)
 		{
 			if (HasLeadingQuestionMark(url))
 			{
@@ -13,11 +15,12 @@ namespace QueryStringParser
 
 			if (url == string.Empty)
 			{
-				return new Dictionary<string, string>();
+				return new Dictionary<string, List<string>>();
 			}
 
 			var fieldValuePairs = url.Split('&', ';');
-			var urlDictionary = new Dictionary<string, string>();
+			var urlDictionary = new Dictionary<string, List<string>>();
+			
 
 			foreach (var fieldValuePair in fieldValuePairs)
 			{
@@ -34,16 +37,21 @@ namespace QueryStringParser
 		}
 
 		private static void AddFieldAndValueToDictionary(
-			string singleQueryString, Dictionary<string, string> urlDictionary)
+			string singleQueryString, Dictionary<string, List<string>> urlDictionary)
 		{
 			var equalsPos = singleQueryString.IndexOf('=');
 			var fieldUrl = singleQueryString.Remove(equalsPos);
 			var valueUrl = singleQueryString.Substring(equalsPos + 1);
-			if (urlDictionary.ContainsKey(fieldUrl))
+			List<string> valuesForParameter;
+			var parameterAlreadyExists = urlDictionary.TryGetValue(fieldUrl, out valuesForParameter);
+			if (parameterAlreadyExists)
 			{
-				fieldUrl += "1";
+				valuesForParameter.Add(fieldUrl);
 			}
-			urlDictionary.Add(fieldUrl, valueUrl);
+			else
+			{
+				urlDictionary[fieldUrl] = new List<string> {valueUrl};
+			}
 		}
 
 		private static bool HasLeadingQuestionMark(string url)
